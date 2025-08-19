@@ -12,7 +12,11 @@ async function apiGet(path, query = undefined) {
 }
 
 function buildTable(columns, rows) {
+  const wrapper = document.createElement('div')
+  wrapper.classList.add('table-wrapper')
+
   const tbl = document.createElement('table')
+  wrapper.appendChild(tbl)
 
   const hrow = tbl.insertRow()
   for (const col of columns) {
@@ -35,7 +39,7 @@ function buildTable(columns, rows) {
     cell.style.textAlign = 'center'
   }
 
-  return tbl
+  return wrapper
 }
 
 function showError(output, message) {
