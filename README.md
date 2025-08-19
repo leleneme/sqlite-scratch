@@ -1,6 +1,6 @@
 ### sql-scratch
 
-A simple and stupid web application for doing queries and seeing the schema of a SQLite database.
+A simple and stupid web application for running queries and seeing the schema of a SQLite database.
 
 #### Building
 
@@ -17,7 +17,7 @@ $ cp target/release/sqlite-scratch .
 sql-scratch [database file]
 ```
 
-(If the database file is provided as a command-line argument, DB_FILE environment variable is used as fallback.)
+(If the database file is not provided as a command-line argument, DB_FILE environment variable is used as fallback.)
 
 #### License
 
