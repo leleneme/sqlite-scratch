@@ -8,7 +8,10 @@
       return showError(output, response.error)
     }
 
-    for (const [key, value] of Object.entries(response.tables)) {
+    const orderedKeys = Array.from(Object.keys(response.tables)).sort();
+
+    for (const key of orderedKeys) {
+      const value = response.tables[key]
       const cols = ["Name", "Type"]
 
       const tblWrapper = document.createElement('div')
