@@ -21,20 +21,20 @@ function buildTable(columns, rows) {
   const hrow = tbl.insertRow()
   for (const col of columns) {
     const th = document.createElement('th')
-    th.innerText = col
+    th.innerHTML = col
     hrow.appendChild(th)
   }
 
   for (const row of rows) {
     const trow = tbl.insertRow()
     for (const value of row) {
-      trow.insertCell().innerText = value
+      trow.insertCell().innerHTML = value
     }
   }
 
   if (rows.length == 0) {
     const cell = tbl.insertRow().insertCell()
-    cell.innerText = 'No data'
+    cell.innerHTML = 'No data'
     cell.setAttribute('colspan', columns.length)
     cell.style.textAlign = 'center'
   }

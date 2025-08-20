@@ -26,9 +26,22 @@ struct Column {
     not_null: bool,
 }
 
+#[derive(Serialize, Debug)]
+struct ForeignKey {
+    table: String,
+    from: String,
+    to: String,
+}
+
+#[derive(Serialize)]
+struct TableInfo {
+    foreign_keys: Vec<ForeignKey>,
+    columns: Vec<Column>,
+}
+
 #[derive(Serialize)]
 pub struct Schema {
-    tables: HashMap<String, Vec<Column>>,
+    tables: HashMap<String, TableInfo>,
 }
 
 fn to_json(value: rusqlite::types::Value) -> serde_json::Value {
@@ -78,7 +91,7 @@ pub fn get_schema(conn: &Connection) -> rusqlite::Result<Schema> {
         let sql = format!("PRAGMA table_info({table})");
         let mut col_stmt = conn.prepare(&sql)?;
 
-        let cols = col_stmt
+        let columns = col_stmt
             .query_map([], |row: &Row| {
                 Ok(Column {
                     name: row.get("name")?,
@@ -90,7 +103,20 @@ pub fn get_schema(conn: &Connection) -> rusqlite::Result<Schema> {
             })?
             .collect::<rusqlite::Result<Vec<_>>>()?;
 
-        tables.insert(table, cols);
+        let sql = format!("PRAGMA foreign_key_list({table})");
+        let mut fk_stmt = conn.prepare(&sql)?;
+
+        let foreign_keys = fk_stmt
+            .query_map([], |row: &Row| {
+                Ok(ForeignKey {
+                    table: row.get("table")?,
+                    from: row.get("from")?,
+                    to: row.get("to")?,
+                })
+            })?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+
+        tables.insert(table, TableInfo { columns, foreign_keys });
     }
 
     Ok(Schema { tables })
